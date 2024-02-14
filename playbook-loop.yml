@@ -1,0 +1,9 @@
+---
+- name: loop across tasks
+  hosts: all
+
+  tasks:
+    - name: import tasks
+      ansible.builtin.import_tasks:
+        name: tasks.yml
+      loop: [apache2, vsftpd]

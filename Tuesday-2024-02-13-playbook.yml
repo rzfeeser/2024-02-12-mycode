@@ -1,0 +1,26 @@
+---
+- name: Tuesday morning review  # title / metadata for "play"
+  hosts: planetexpress          # identified within the inventory as a group or host
+  gather_facts: true            # default is "true" - gathers info from target(s)
+                                # works against: linux, windows, major network devs
+  connection: ansible.builtin.ssh  # ssh connection plugin (default)
+
+  tasks:
+    #- name: using shell to install steam locomotive
+    #  ansible.builtin.shell: "apt install sl"
+    #  become: yes # runs the task as admin / sudo / enable / "with permissions"
+
+  - name: using ansible.builtin.yum to install sl
+    ansible.builtin.yum:
+      name: sl
+      state: present
+    become: yes
+    when: ansible_os_family == "RedHat"  # when the variable ansible_os_family ...
+    #when: ansible_facts.ansible_os_family
+
+  - name: using ansible.builtin.apt to install sl
+    ansible.builtin.apt:
+      name: sl
+      state: present
+    become: yes
+    when: ansible_os_family == "Debian"  # when the variable ansible_os_family ...

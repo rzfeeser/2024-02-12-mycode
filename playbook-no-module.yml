@@ -1,0 +1,10 @@
+---
+- name: playbook that fails
+  gather_facts: false
+  hosts: planetexpress
+
+  tasks:
+    - name: a fake task
+      ansible.builtin.zach:
+        instructor: true
+        lesson: ansible

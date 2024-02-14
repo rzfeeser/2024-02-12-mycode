@@ -1,0 +1,39 @@
+---
+- name: Build a minecraft server
+  connection: ansible.builtin.ssh
+  hosts: fry
+  gather_facts: true # this MUST run to determine if the target machine supports our package installer
+
+  vars_files:
+    - vars/main.yml  # contains mappings our of variables
+
+  tasks:
+
+  - name: Create a directory if it does not exist
+    ansible.builtin.file:
+      path: "{{ path }}"
+      state: directory
+      mode: "0755"
+      
+  - name: download file
+    ansible.builtin.get_url:
+      url: "{{ url }}"
+      dest: "{{ path }}"
+      mode: "0644"
+      #checksum: sha256:b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c
+
+  - name: download dependencies
+    ansible.builtin.apt:
+      name: "{{ name }}"
+      state: present # we want this software to be on the server
+    when: ansible_os_family == "Debian"          # same as ansible_facts.os_family
+    become: yes
+
+  - name: move a file to our target system
+    ansible.builtin.copy:
+      src: "{{ src }}"
+      dest: "{{ path }}"
+      mode: "0644"
+
+  - name: Start the minecraft server
+    ansible.builtin.shell: "screen -S minecraft -d -m java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui"

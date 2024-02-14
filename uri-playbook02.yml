@@ -1,0 +1,17 @@
+---
+- name: lookup json from REST api
+  connection: ansible.builtin.local
+  hosts: localhost # don't do this, always use an inventory!
+  gather_facts: false # we would collect info about ourselves
+
+
+  tasks:
+    - name: make api lookup
+      ansible.builtin.uri:
+        url: http://api.open-notify.org/astros.json
+        method: GET
+      register: results  # create the variable results
+
+    - name: display results
+      ansible.builtin.debug:
+        var: results   # display the results collected above
